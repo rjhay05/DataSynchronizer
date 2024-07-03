@@ -1,0 +1,15 @@
+E:\Self Study\.NetCore\DataSync_Demo\bin\Debug\DataSync_Demo.exe.config
+E:\Self Study\.NetCore\DataSync_Demo\bin\Debug\DataSync_Demo.exe
+E:\Self Study\.NetCore\DataSync_Demo\bin\Debug\DataSync_Demo.pdb
+E:\Self Study\.NetCore\DataSync_Demo\bin\Debug\Microsoft.Synchronization.Data.dll
+E:\Self Study\.NetCore\DataSync_Demo\bin\Debug\Microsoft.Synchronization.Data.SqlServer.dll
+E:\Self Study\.NetCore\DataSync_Demo\bin\Debug\Microsoft.Synchronization.dll
+E:\Self Study\.NetCore\DataSync_Demo\bin\Debug\Microsoft.Synchronization.xml
+E:\Self Study\.NetCore\DataSync_Demo\bin\Debug\Microsoft.Synchronization.Data.xml
+E:\Self Study\.NetCore\DataSync_Demo\bin\Debug\Microsoft.Synchronization.Data.SqlServer.xml
+E:\Self Study\.NetCore\DataSync_Demo\obj\Debug\DataSync_Demo.csproj.AssemblyReference.cache
+E:\Self Study\.NetCore\DataSync_Demo\obj\Debug\DataSync_Demo.csproj.SuggestedBindingRedirects.cache
+E:\Self Study\.NetCore\DataSync_Demo\obj\Debug\DataSync_Demo.csproj.CoreCompileInputs.cache
+E:\Self Study\.NetCore\DataSync_Demo\obj\Debug\DataSync_Demo.csproj.CopyComplete
+E:\Self Study\.NetCore\DataSync_Demo\obj\Debug\DataSync_Demo.exe
+E:\Self Study\.NetCore\DataSync_Demo\obj\Debug\DataSync_Demo.pdb
