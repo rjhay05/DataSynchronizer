@@ -8,16 +8,18 @@ namespace DataSync_Demo
 {
     public static class Synchronizer
     {
-        private static void Initialize(string table, string serverConnectionString, 
+        private static void Initialize(string table, string serverConnectionString,
             string clientConnectionString)
         {
-            using(SqlConnection serverConnection = new SqlConnection(serverConnectionString))
+            using (SqlConnection serverConnection = new SqlConnection(serverConnectionString))
             {
-                using(SqlConnection clientConnection = new SqlConnection(clientConnectionString))
+                using (SqlConnection clientConnection = new SqlConnection(clientConnectionString))
                 {
                     DbSyncScopeDescription scopeDescription = new DbSyncScopeDescription(table);
                     DbSyncTableDescription tableDescription = SqlSyncDescriptionBuilder.GetDescriptionForTable(table, serverConnection);
                     scopeDescription.Tables.Add(tableDescription);
+                    scopeDescription.Tables["Products"].Columns.Remove(scopeDescription.Tables["Products"].Columns["SyncID"]);
+                    scopeDescription.Tables["Products"].Columns["ID"].IsPrimaryKey = true;
                     SqlSyncScopeProvisioning serverProvsion = new SqlSyncScopeProvisioning(serverConnection, scopeDescription);
                     serverProvsion.Apply();
                     SqlSyncScopeProvisioning clientProvsion = new SqlSyncScopeProvisioning(clientConnection, scopeDescription);
@@ -32,20 +34,22 @@ namespace DataSync_Demo
             Initialize(table, serverConnectionString, clientConnectionString);
             Synchronize(table, serverConnectionString, clientConnectionString, SyncDirectionOrder.DownloadAndUpload);
             CleanUp(table, serverConnectionString, clientConnectionString);
+
+
         }
 
         private static void Synchronize(string scopeName, string serverConnectionString,
             string clientConnectionString, SyncDirectionOrder syncDirectionOrder)
         {
-            using(SqlConnection serverConnection = new SqlConnection(serverConnectionString))
+            using (SqlConnection serverConnection = new SqlConnection(serverConnectionString))
             {
-                using(SqlConnection clientConnection = new SqlConnection(clientConnectionString))
+                using (SqlConnection clientConnection = new SqlConnection(clientConnectionString))
                 {
                     var agent = new SyncOrchestrator()
                     {
                         LocalProvider = new SqlSyncProvider(scopeName, clientConnection),
                         RemoteProvider = new SqlSyncProvider(scopeName, serverConnection),
-                        Direction = syncDirectionOrder  
+                        Direction = syncDirectionOrder
                     };
 
                     (agent.RemoteProvider as RelationalSyncProvider).SyncProgress
@@ -63,11 +67,11 @@ namespace DataSync_Demo
         private static void CleanUp(string scopeName, string serverConnectionString,
             string clientConnectionString)
         {
-           using(SqlConnection serverConnection = new SqlConnection(serverConnectionString))
+            using (SqlConnection serverConnection = new SqlConnection(serverConnectionString))
             {
-                using(SqlConnection clientConnection = new SqlConnection(clientConnectionString))
+                using (SqlConnection clientConnection = new SqlConnection(clientConnectionString))
                 {
-                    SqlSyncScopeDeprovisioning serverDeprovisioning = 
+                    SqlSyncScopeDeprovisioning serverDeprovisioning =
                         new SqlSyncScopeDeprovisioning(serverConnection);
                     SqlSyncScopeDeprovisioning clientDeprovisioning =
                         new SqlSyncScopeDeprovisioning(clientConnection);
@@ -81,7 +85,7 @@ namespace DataSync_Demo
             }
 
         }
-        
+
         private static void dbProvider_SyncProgress(object sender, DbSyncProgressEventArgs e)
         {
             Console.WriteLine(e.ScopeProgress.ToString());
