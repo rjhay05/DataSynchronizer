@@ -11,21 +11,31 @@ namespace DataSync_Demo
         private static void Initialize(string table, string serverConnectionString,
             string clientConnectionString)
         {
-            using (SqlConnection serverConnection = new SqlConnection(serverConnectionString))
+            //Server provisioning
+            var serverConnection = new SqlConnection(serverConnectionString);
+            DbSyncScopeDescription serverScope = new DbSyncScopeDescription(table);
+            DbSyncTableDescription serverTableDescription = SqlSyncDescriptionBuilder.GetDescriptionForTable(table, serverConnection);
+            serverScope.Tables.Add(serverTableDescription);
+            SqlSyncScopeProvisioning serverProvsioning = new SqlSyncScopeProvisioning(serverConnection, serverScope);
+            if (!serverProvsioning.ScopeExists(table))
             {
-                using (SqlConnection clientConnection = new SqlConnection(clientConnectionString))
-                {
-                    DbSyncScopeDescription scopeDescription = new DbSyncScopeDescription(table);
-                    DbSyncTableDescription tableDescription = SqlSyncDescriptionBuilder.GetDescriptionForTable(table, serverConnection);
-                    scopeDescription.Tables.Add(tableDescription);
-                    scopeDescription.Tables["Products"].Columns.Remove(scopeDescription.Tables["Products"].Columns["SyncID"]);
-                    scopeDescription.Tables["Products"].Columns["ID"].IsPrimaryKey = true;
-                    SqlSyncScopeProvisioning serverProvsion = new SqlSyncScopeProvisioning(serverConnection, scopeDescription);
-                    serverProvsion.Apply();
-                    SqlSyncScopeProvisioning clientProvsion = new SqlSyncScopeProvisioning(clientConnection, scopeDescription);
-                    clientProvsion.Apply();
-                }
+                serverProvsioning.SetCreateTableDefault(DbSyncCreationOption.Skip);
+                serverProvsioning.Apply();
             }
+
+
+            //Client provisioning
+            var clientConnection = new SqlConnection(clientConnectionString);
+            DbSyncScopeDescription clientScope = new DbSyncScopeDescription(table);
+            DbSyncTableDescription clientTableDescription = SqlSyncDescriptionBuilder.GetDescriptionForTable(table, clientConnection);
+            clientScope.Tables.Add(clientTableDescription);
+            SqlSyncScopeProvisioning clientProvsioning = new SqlSyncScopeProvisioning(clientConnection, clientScope);
+            if (!clientProvsioning.ScopeExists(table))
+            {
+                clientProvsioning.SetCreateTableDefault(DbSyncCreationOption.Skip);
+                clientProvsioning.Apply();
+            }
+
         }
 
         public static void Synchronize(string table, string serverConnectionString,
